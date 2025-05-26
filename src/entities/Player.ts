@@ -24,18 +24,9 @@ class Player {
     this.setupControls();
   }
 
-  setupControls(): void {
-    window.addEventListener("keydown", (event) => {
-      if (event.code === "Space") {
-        this.jump();
-      }
-    });
-  }
-
-  jump(): void {
-    if (!this.grounded) return;
-
-    this.dy -= 20;
+  draw(ctx: CanvasRenderingContext2D): void {
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
   update(canvas: HTMLCanvasElement): void {
@@ -51,9 +42,18 @@ class Player {
     }
   }
 
-  draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+  private setupControls(): void {
+    window.addEventListener("keydown", (event) => {
+      if (event.code === "Space") {
+        this.jump();
+      }
+    });
+  }
+
+  private jump(): void {
+    if (!this.grounded) return;
+
+    this.dy -= 20;
   }
 }
 
