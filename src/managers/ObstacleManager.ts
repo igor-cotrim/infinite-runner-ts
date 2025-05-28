@@ -79,6 +79,11 @@ class ObstacleManager {
 
     this.obstacles.push(obstacle);
   }
+
+  reset() {
+    this.obstacles = [];
+    this.nextSpawnTime = 0;
+  }
 }
 
 export default ObstacleManager;

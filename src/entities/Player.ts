@@ -55,6 +55,13 @@ class Player {
 
     this.dy -= 20;
   }
+
+  reset(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+    this.dy = 0;
+    this.grounded = true;
+  }
 }
 
 export default Player;

@@ -15,6 +15,7 @@ class Game {
   lastTimestamp = 0;
   gameSpeed = INITIAL_GAME_SPEED;
   isGameOver = false;
+  isPlaying = false;
 
   constructor() {
     this.canvas.width = window.innerWidth;
@@ -23,6 +24,32 @@ class Game {
     this.player = new Player(50, this.canvas.height - 50, 50, 50, "#f231a5");
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
     this.textManager = new TextManager(this.canvas, this.ctx);
+
+    this.setupControls();
+  }
+
+  handleGameAction() {
+    if (!this.isPlaying && !this.isGameOver) {
+      this.isPlaying = true;
+    } else if (this.isGameOver) {
+      this.resetGame();
+    }
+  }
+
+  setupControls() {
+    window.addEventListener("keydown", (event) => {
+      if (event.code === "Space") {
+        this.handleGameAction();
+      }
+    });
+  }
+
+  resetGame() {
+    this.isGameOver = false;
+    this.isPlaying = true;
+    this.gameSpeed = INITIAL_GAME_SPEED;
+    this.obstacleManager.reset();
+    this.player.reset(50, this.canvas.height - 50);
   }
 
   render(timestamp: number) {
@@ -36,8 +63,12 @@ class Game {
     this.player.draw(this.ctx);
     this.obstacleManager.draw();
 
+    if (!this.isPlaying) {
+      this.textManager.drawInitialScreen();
+    }
+
     // Update
-    if (!this.isGameOver) {
+    if (this.isPlaying && !this.isGameOver) {
       this.player.update(this.canvas);
       this.obstacleManager.update(deltatime, this.gameSpeed);
       this.gameSpeed += 0.3 * (deltatime / 1000);
