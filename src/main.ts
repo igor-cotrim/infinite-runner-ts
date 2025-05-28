@@ -1,5 +1,6 @@
-import Player from "./entities/Player";
+import { INITIAL_GAME_SPEED } from "./constants/game.constants";
 import ObstacleManager from "./managers/ObstacleManager";
+import Player from "./entities/Player";
 
 import "./style.css";
 
@@ -9,6 +10,10 @@ class Game {
   player: Player;
   obstacleManager: ObstacleManager;
 
+  lastTimestamp = 0;
+  gameSpeed = INITIAL_GAME_SPEED;
+  isGameOver = false;
+
   constructor() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
@@ -17,7 +22,10 @@ class Game {
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
   }
 
-  render() {
+  render(timestamp: number) {
+    const deltatime = timestamp - this.lastTimestamp;
+    this.lastTimestamp = timestamp;
+
     this.ctx.fillStyle = "#0a0c21";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -26,18 +34,25 @@ class Game {
     this.obstacleManager.draw();
 
     // Update
-    this.player.update(this.canvas);
-    this.obstacleManager.update();
+    if (!this.isGameOver) {
+      this.player.update(this.canvas);
+      this.obstacleManager.update(deltatime, this.gameSpeed);
+      this.gameSpeed += 0.3 * (deltatime / 1000);
+    }
+
+    if (this.obstacleManager.checkCollision(this.player)) {
+      this.isGameOver = true;
+    }
   }
 }
 
 window.onload = () => {
   const game = new Game();
 
-  function animate() {
-    game.render();
+  function animate(timestamp: number) {
+    game.render(timestamp);
     requestAnimationFrame(animate);
   }
 
-  animate();
+  animate(0);
 };

@@ -1,3 +1,8 @@
+import {
+  INITIAL_GAME_SPEED,
+  SPAWN_MAX_TIME,
+  SPAWN_MIN_TIME,
+} from "../constants/game.constants";
 import Obstacle from "../entities/Obstacle";
 
 class ObstacleManager {
@@ -17,22 +22,56 @@ class ObstacleManager {
     });
   }
 
-  update() {
-    this.nextSpawnTime -= 16; // Assuming 60 FPS, so ~16ms per frame
+  update(deltatime: number, gameSpeed: number) {
     if (this.nextSpawnTime <= 0) {
       this.createObstacle();
-      this.nextSpawnTime = Math.random() * 1000 + 500; // Random spawn time between 500ms and 1500ms
+
+      const speedFactor = INITIAL_GAME_SPEED / gameSpeed;
+
+      this.nextSpawnTime = Math.floor(
+        Math.random() * (SPAWN_MAX_TIME - SPAWN_MIN_TIME) +
+          SPAWN_MIN_TIME * speedFactor
+      );
     }
 
+    this.nextSpawnTime -= deltatime;
+
     this.obstacles.forEach((obstacle) => {
-      obstacle.update();
+      obstacle.x -= gameSpeed;
     });
+
+    // remove obstacles that are off the screen
+    this.obstacles = this.obstacles.filter(
+      (obstacle) => obstacle.x + obstacle.width > 0
+    );
+  }
+
+  checkCollision(player: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }) {
+    for (const obstacle of this.obstacles) {
+      if (
+        player.x < obstacle.x + obstacle.width &&
+        player.x + player.width > obstacle.x &&
+        player.y < obstacle.y + obstacle.height &&
+        player.y + player.height > obstacle.y
+      ) {
+        return true;
+      }
+
+      return false;
+    }
   }
 
   createObstacle() {
+    const y = Math.random() < 0.5 ? 70 : 140;
+
     const obstacle = new Obstacle(
       this.canvas.width,
-      this.canvas.height - 70,
+      this.canvas.height - y,
       30,
       70,
       "#fff000"
