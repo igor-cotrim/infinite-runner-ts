@@ -1,6 +1,7 @@
 import { INITIAL_GAME_SPEED } from "./constants/game.constants";
 import ObstacleManager from "./managers/ObstacleManager";
 import TextManager from "./managers/TextManager";
+import ScoreManager from "./managers/ScoreManager";
 import Player from "./entities/Player";
 
 import "./style.css";
@@ -8,9 +9,12 @@ import "./style.css";
 class Game {
   canvas = document.getElementById("game-canvas") as HTMLCanvasElement;
   ctx = this.canvas.getContext("2d")!;
+
   player: Player;
+
   obstacleManager: ObstacleManager;
   textManager: TextManager;
+  scoreManager = new ScoreManager();
 
   lastTimestamp = 0;
   gameSpeed = INITIAL_GAME_SPEED;
@@ -50,6 +54,7 @@ class Game {
     this.gameSpeed = INITIAL_GAME_SPEED;
     this.obstacleManager.reset();
     this.player.reset(50, this.canvas.height - 50);
+    this.scoreManager.reset();
   }
 
   render(timestamp: number) {
@@ -62,6 +67,8 @@ class Game {
     // Draw
     this.player.draw(this.ctx);
     this.obstacleManager.draw();
+    this.textManager.drawScore(this.scoreManager.getScore());
+    this.textManager.drawHighScore(this.scoreManager.getHighScore());
 
     if (!this.isPlaying) {
       this.textManager.drawInitialScreen();
@@ -72,6 +79,7 @@ class Game {
       this.player.update(this.canvas);
       this.obstacleManager.update(deltatime, this.gameSpeed);
       this.gameSpeed += 0.3 * (deltatime / 1000);
+      this.scoreManager.update(deltatime);
 
       if (this.obstacleManager.checkCollision(this.player)) {
         this.isGameOver = true;
@@ -80,6 +88,7 @@ class Game {
 
     if (this.isGameOver) {
       this.textManager.drawGameOverScreen();
+      this.scoreManager.updateHighScore();
     }
   }
 }
