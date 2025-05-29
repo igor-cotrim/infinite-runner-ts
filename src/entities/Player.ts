@@ -50,10 +50,12 @@ class Player {
     });
   }
 
-  private jump(): void {
-    if (!this.grounded) return;
-
-    this.dy -= 20;
+  jump(jumpHeight: number = -20): void {
+    if (jumpHeight < -15) {
+      if (this.grounded) {
+        this.dy = jumpHeight;
+      }
+    }
   }
 
   reset(x: number, y: number) {

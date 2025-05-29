@@ -2,6 +2,7 @@ import { INITIAL_GAME_SPEED } from "./constants/game.constants";
 import ObstacleManager from "./managers/ObstacleManager";
 import TextManager from "./managers/TextManager";
 import ScoreManager from "./managers/ScoreManager";
+import AudioManager from "./managers/AudioManager";
 import Player from "./entities/Player";
 
 import "./style.css";
@@ -15,6 +16,7 @@ class Game {
   obstacleManager: ObstacleManager;
   textManager: TextManager;
   scoreManager = new ScoreManager();
+  audioManager = new AudioManager();
 
   lastTimestamp = 0;
   gameSpeed = INITIAL_GAME_SPEED;
@@ -32,7 +34,16 @@ class Game {
     this.setupControls();
   }
 
+  async initializeAudio() {
+    try {
+      await this.audioManager.initialize();
+    } catch (error) {
+      console.error("Failed to initialize audio:", error);
+    }
+  }
+
   handleGameAction() {
+    this.initializeAudio();
     if (!this.isPlaying && !this.isGameOver) {
       this.isPlaying = true;
     } else if (this.isGameOver) {
@@ -57,6 +68,15 @@ class Game {
     this.scoreManager.reset();
   }
 
+  updatePlayer() {
+    if (this.audioManager.initialized) {
+      const jumpHeight = this.audioManager.getJumpHeight();
+      this.player.jump(jumpHeight);
+    }
+
+    this.player.update(this.canvas);
+  }
+
   render(timestamp: number) {
     const deltatime = timestamp - this.lastTimestamp;
     this.lastTimestamp = timestamp;
@@ -76,7 +96,7 @@ class Game {
 
     // Update
     if (this.isPlaying && !this.isGameOver) {
-      this.player.update(this.canvas);
+      this.updatePlayer();
       this.obstacleManager.update(deltatime, this.gameSpeed);
       this.gameSpeed += 0.3 * (deltatime / 1000);
       this.scoreManager.update(deltatime);
