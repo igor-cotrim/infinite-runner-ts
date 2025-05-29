@@ -5,6 +5,7 @@ import ScoreManager from "./managers/ScoreManager";
 import AudioManager from "./managers/AudioManager";
 import Player from "./entities/Player";
 import Ground from "./entities/Ground";
+import Background from "./entities/Background";
 
 import "./style.css";
 
@@ -14,6 +15,7 @@ class Game {
 
   player: Player;
   ground: Ground;
+  background: Background;
 
   obstacleManager: ObstacleManager;
   textManager: TextManager;
@@ -35,6 +37,7 @@ class Game {
       this.canvas.width,
       GROUND_HEIGHT
     );
+    this.background = new Background(this.canvas);
     this.player = new Player(
       50,
       this.canvas.height - GROUND_HEIGHT - 50,
@@ -99,6 +102,7 @@ class Game {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw
+    this.background.draw(this.ctx);
     this.ground.draw(this.ctx);
     this.player.draw(this.ctx);
     this.obstacleManager.draw();
@@ -112,6 +116,7 @@ class Game {
     // Update
     if (this.isPlaying && !this.isGameOver) {
       this.updatePlayer();
+      this.background.update(this.gameSpeed);
       this.ground.update(this.gameSpeed);
       this.obstacleManager.update(deltatime, this.gameSpeed);
       this.gameSpeed += 0.3 * (deltatime / 1000);
