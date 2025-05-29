@@ -1,3 +1,5 @@
+import { GROUND_HEIGHT } from "../constants/game.constants";
+
 class Player {
   private dy: number = 0;
   private grounded: boolean = true;
@@ -31,14 +33,15 @@ class Player {
 
   update(canvas: HTMLCanvasElement): void {
     this.y += this.dy;
+    const groundY = canvas.height - GROUND_HEIGHT;
 
-    if (this.y + this.height < canvas.height) {
+    if (this.y + this.height < groundY) {
       this.dy += 1; // Gravity effect
       this.grounded = false;
     } else {
       this.dy = 0; // Reset vertical speed
       this.grounded = true; // Player is grounded
-      this.y = canvas.height - this.height; // Prevent going below the ground
+      this.y = groundY - this.height; // Prevent going below the ground
     }
   }
 

@@ -1,4 +1,5 @@
 import {
+  GROUND_HEIGHT,
   INITIAL_GAME_SPEED,
   SPAWN_MAX_TIME,
   SPAWN_MIN_TIME,
@@ -71,7 +72,7 @@ class ObstacleManager {
 
     const obstacle = new Obstacle(
       this.canvas.width,
-      this.canvas.height - y,
+      this.canvas.height - GROUND_HEIGHT - y,
       30,
       70,
       "#fff000"
