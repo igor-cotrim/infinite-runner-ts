@@ -88,6 +88,10 @@ class Game {
         this.handleGameAction();
       }
     });
+
+    window.addEventListener("touchstart", () => {
+      this.handleGameAction();
+    });
   }
 
   resetGame() {

@@ -45,6 +45,10 @@ class Player extends Sprite {
         this.jump();
       }
     });
+
+    window.addEventListener("touchstart", () => {
+      this.jump();
+    });
   }
 
   jump(jumpHeight: number = -20): void {
