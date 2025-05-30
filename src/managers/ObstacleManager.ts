@@ -53,12 +53,17 @@ class ObstacleManager {
     width: number;
     height: number;
   }) {
+    const collisionCompensation = 15;
     for (const obstacle of this.obstacles) {
       if (
-        player.x < obstacle.x + obstacle.width &&
-        player.x + player.width > obstacle.x &&
-        player.y < obstacle.y + obstacle.height &&
-        player.y + player.height > obstacle.y
+        player.x + collisionCompensation <
+          obstacle.x + obstacle.width - collisionCompensation &&
+        player.x + player.width - collisionCompensation >
+          obstacle.x + collisionCompensation &&
+        player.y + collisionCompensation <
+          obstacle.y + obstacle.height - collisionCompensation &&
+        player.y + player.height - collisionCompensation >
+          obstacle.y + collisionCompensation
       ) {
         return true;
       }
@@ -72,10 +77,7 @@ class ObstacleManager {
 
     const obstacle = new Obstacle(
       this.canvas.width,
-      this.canvas.height - GROUND_HEIGHT - y,
-      30,
-      70,
-      "#fff000"
+      this.canvas.height - GROUND_HEIGHT - y
     );
 
     this.obstacles.push(obstacle);

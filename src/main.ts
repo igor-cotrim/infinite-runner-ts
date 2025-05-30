@@ -1,4 +1,8 @@
-import { GROUND_HEIGHT, INITIAL_GAME_SPEED } from "./constants/game.constants";
+import {
+  GROUND_HEIGHT,
+  INITIAL_GAME_SPEED,
+  PLAYER_SPRITE_SIZE,
+} from "./constants/game.constants";
 import ObstacleManager from "./managers/ObstacleManager";
 import TextManager from "./managers/TextManager";
 import ScoreManager from "./managers/ScoreManager";
@@ -40,10 +44,7 @@ class Game {
     this.background = new Background(this.canvas);
     this.player = new Player(
       50,
-      this.canvas.height - GROUND_HEIGHT - 50,
-      50,
-      50,
-      "#f231a5"
+      this.canvas.height - GROUND_HEIGHT - PLAYER_SPRITE_SIZE
     );
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
     this.textManager = new TextManager(this.canvas, this.ctx);

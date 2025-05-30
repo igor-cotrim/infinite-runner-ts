@@ -1,34 +1,26 @@
-import { GROUND_HEIGHT } from "../constants/game.constants";
+import { GROUND_HEIGHT, PLAYER_SPRITE_SIZE } from "../constants/game.constants";
+import Sprite from "./Sprite";
 
-class Player {
+class Player extends Sprite {
   private dy: number = 0;
   private grounded: boolean = true;
 
   x: number;
   y: number;
-  width: number;
-  height: number;
-  color: string;
 
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    color: string
-  ) {
+  constructor(x: number, y: number) {
+    super(x, y, PLAYER_SPRITE_SIZE, PLAYER_SPRITE_SIZE, {
+      imageSrc: "player.png",
+      spriteWidth: PLAYER_SPRITE_SIZE,
+      spriteHeight: PLAYER_SPRITE_SIZE,
+      frameSpacing: 192,
+      frameCount: 16,
+    });
+    this.sprite.src = "player.png";
     this.x = x;
     this.y = y;
-    this.width = width;
-    this.height = height;
-    this.color = color;
 
     this.setupControls();
-  }
-
-  draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
   update(canvas: HTMLCanvasElement): void {
@@ -43,6 +35,8 @@ class Player {
       this.grounded = true; // Player is grounded
       this.y = groundY - this.height; // Prevent going below the ground
     }
+
+    this.updateAnimation();
   }
 
   private setupControls(): void {
