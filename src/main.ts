@@ -17,12 +17,12 @@ class Game {
   canvas = document.getElementById("game-canvas") as HTMLCanvasElement;
   ctx = this.canvas.getContext("2d")!;
 
-  player: Player;
-  ground: Ground;
-  background: Background;
+  player!: Player;
+  ground!: Ground;
+  background!: Background;
 
-  obstacleManager: ObstacleManager;
-  textManager: TextManager;
+  obstacleManager!: ObstacleManager;
+  textManager!: TextManager;
   scoreManager = new ScoreManager();
   audioManager = new AudioManager();
 
