@@ -32,6 +32,12 @@ class Game {
   isPlaying = false;
 
   constructor() {
+    this.initializeGame();
+    this.setupCanvas();
+    this.setupControls();
+  }
+
+  initializeGame() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
 
@@ -48,8 +54,6 @@ class Game {
     );
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
     this.textManager = new TextManager(this.canvas, this.ctx);
-
-    this.setupControls();
   }
 
   async initializeAudio() {
@@ -67,6 +71,15 @@ class Game {
     } else if (this.isGameOver) {
       this.resetGame();
     }
+  }
+
+  setupCanvas() {
+    let resizeTimeout: number;
+
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => this.initializeGame(), 100);
+    });
   }
 
   setupControls() {
